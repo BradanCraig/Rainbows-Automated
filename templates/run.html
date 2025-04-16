@@ -1,0 +1,13 @@
+
+<script>
+    function ExecCommand(command){
+        var request = new XMLHttpRequest();
+        request.open("GET", "/" + command, true)
+        request.send()
+    }
+</script>
+
+<body>
+
+    <button onclick="ExecCommand('run_script()')">Click Me</button>
+</body>
