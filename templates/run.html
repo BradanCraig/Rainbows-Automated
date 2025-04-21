@@ -1,13 +1,48 @@
+<html>
+    <head>
+        <script>
 
-<script>
-    function ExecCommand(command){
-        var request = new XMLHttpRequest();
-        request.open("GET", "/" + command, true)
-        request.send()
-    }
-</script>
+            function GetVals(){
+                var duration = parseFloat(document.getElementById("duration").value)
+                var frequency = parseFloat(document.getElementById("frequency").value)
+                console.log(duration, frequency)
+                console.log(60 % frequency)
+                if(frequency >= .25 && 60 % frequency == 0){
+                    
+                    fetch("/run_script", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({duration, frequency})
+                    })
+                    
+                    .then(response => response.text())
+                    .then(data => console.log("Response from server:", data))
+                    .catch(err => console.error("Error:", err));
+                }
+                else{
+                    let popup = window.open(
+                        'about:blank',
+                        "Error Message",
+                        'width=600,height=400,resizable=yes')
+
+                    popup.document.write('<h1>Please enter a value greater than .25 and divisable by 60</h1>')
+                }
+            }
+
+        </script>
+    </head>
 
 <body>
-
-    <button onclick="ExecCommand('run_script()')">Click Me</button>
+    <p>How many minutes would you like to take pictures for?</p>
+    <input type="text" id="duration">
+    <p>How many images would you like to take a minute?</p>
+    <a>Can be as low as .25</a>
+    <input type="text" id="frequency">
+    <button onclick="GetVals()">Click Me</button>
 </body>
+
+
+
+</html>

@@ -1,5 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from raspberrypi import *
+
+
+
+
+
 
 app=Flask(__name__)
 
@@ -15,14 +20,16 @@ def livestream():
 def run():
     return render_template("run.html", run=run_script)
 
-@app.route('/<FUNCTION>')
-def command(FUNCTION=None):
-    exec(FUNCTION.replace("<br>", "\n"))
-    return""
-
-def call_command(script_name=None):
-    run_script(script_name=script_name)
-
+#This takes the run_script post request and calls the run script command in another file
+@app.route('/run_script', methods=['POST'])
+def run_script_route():
+    data = request.get_json()
+    duration = data.get("duration")
+    frequency = data.get("frequency")
+    
+    print(f"durration={duration}\nFrequency={frequency}")
+    
+    run_script(duration=duration, frequency=frequency)
 
 
 if __name__ =="__main__":
