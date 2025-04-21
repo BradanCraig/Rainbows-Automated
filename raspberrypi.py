@@ -9,11 +9,11 @@ import time
 
 def run_script(duration, frequency, script_name="/home/lizawhite/Desktop/SetupCode.py"):
     
-    result_message = subprocess.run(f"ssh lizawhite@10.4.119.62 python3 {script_name}")
+    result_message = subprocess.run(f"ssh -i C:/Users/Bradan/.ssh/raspberrypi lizawhite@10.4.119.62 python3 {script_name}")
     print(result_message)
     if result_message.returncode == 0:
         local_path = "C:/HowelLab/Rainbows/Automated_Rainbows/Rainbows-Automated/images"
-        scp_command = f'scp lizawhite@10.4.119.62:/home/lizawhite/image.jpg "{local_path}"'
+        scp_command = f'scp -i C:/Users/Bradan/.ssh/raspberrypi lizawhite@10.4.119.62:/home/lizawhite/image.jpg "{local_path}"'
         pulling_img_message = subprocess.run(scp_command, shell=True)
         print(pulling_img_message)
     else:
