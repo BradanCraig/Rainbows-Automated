@@ -8,33 +8,29 @@ import time
 
 app=Flask(__name__)
 
+
+
 @app.route('/')
 def home():
     client_ip = request.remote_addr
     print(client_ip)
     return render_template("home.html")
 
+
+
 @app.route("/livestream")
 def livestream():
     return "Need to get the IP from the Raspberry Pi"
+
+
 
 @app.route("/run")
 def run():
     return render_template("run.html", run=run_script)
 
-#This takes the run_script post request and calls the run script command in another file
-@app.route('/run_script', methods=['POST'])
-def run_script_route():
-    data = request.get_json()
-    duration = data.get("duration")
-    frequency = data.get("frequency")
-    
-    print(f"durration={duration}\nFrequency={frequency}")
-    
-    run_script(duration=duration, frequency=frequency)
+
 
 @app.route('/send_dur_and_freq', methods=['POST'])
-
 def sending_data():
     data = request.get_json()
     duration = data.get("duration")
@@ -52,7 +48,7 @@ def sending_data():
             
             response = requests.post(url, json=data, headers=headers)
             image = decode_image(encoded_img=response.json()['image'])
-            image.save(f"image_{i}.png")
+            image.save(f"images/image_{i}.png")
             
             if i != number_of_images:
                 time.sleep((1/frequency)*60)
@@ -65,7 +61,9 @@ def sending_data():
         return f"Error sending data: {e}", 500
 
 
-
+@app.route("/setup")
+def setup():
+    return render_template("setup.html")
 
 if __name__ =="__main__":
     app.run(debug=True, port=5000)
