@@ -4,9 +4,13 @@ import requests
 import base64
 from helpers import *
 import time
-
+from pymongo import MongoClient
+import pymongo
 
 app=Flask(__name__)
+client = MongoClient('mongodb://localhost:27017/')
+DB = client['Rainbows_DB']
+
 
 
 
@@ -64,6 +68,33 @@ def sending_data():
 @app.route("/setup")
 def setup():
     return render_template("setup.html")
+
+
+@app.route("/create_account")
+def create_account():
+    return render_template("create_account.html")
+
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+@app.route("/add_data_to_db", methods=['POST'])
+def add_data_to_db():
+    try:
+        data = request.json
+        print(data)
+        result = DB["users"].insert_one(data)
+        print(f"Inserted with _id: {result.inserted_id}")
+        return {"status": "success", "inserted_id": str(result.inserted_id)}, 200
+    except pymongo.errors.PyMongoError as e:
+        print(f"MongoDB error: {e}")
+        return {"status": "error", "message": str(e)}, 500
+
+
+
+
 
 if __name__ =="__main__":
     app.run(debug=True, port=5000)

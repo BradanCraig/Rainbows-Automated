@@ -1,0 +1,38 @@
+<html>
+    <script>
+        function AddAccount(){
+            var new_username = document.getElementById("user").value
+            var new_password = document.getElementById("pass").value
+            console.log(new_password, new_username)
+            fetch("/add_data_to_db", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                             username: new_username,
+                            password:new_password,
+                            systems: [],
+                            files: []
+                        })
+                    })
+                    
+                    .then(response => response.text())
+                    .then(data => console.log("Response from server:", data))
+                    .catch(err => console.error("Error:", err));
+        }
+    </script>
+
+
+
+
+    <body>
+
+    <p>Username</p>
+    <input type="username" id="user">
+    <p>Password</p>
+    <input type="password" id="pass">
+
+    <button onclick="AddAccount()">Submit</button>
+    </body>
+</html>

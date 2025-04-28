@@ -6,8 +6,7 @@
             function GetVals(){
                 var duration = parseFloat(document.getElementById("duration").value)
                 var frequency = parseFloat(document.getElementById("frequency").value)
-                console.log(duration, frequency)
-                console.log(60 % frequency)
+
                 if(frequency >= .25 && 60 % frequency == 0){
                     
                     fetch("/send_dur_and_freq", {

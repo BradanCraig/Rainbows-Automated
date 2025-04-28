@@ -1,0 +1,42 @@
+<html>
+    <script>
+        function authenticate(){
+            var username = document.getElementById("user")
+            var password = document.getElementById("pass")
+
+            if(password == NaN || username == Nan){
+                let popup = window.open(
+                        'about:blank',
+                        "Error Message",
+                        'width=600,height=400,resizable=yes')
+
+                    popup.document.write('<h1>fill in both categories</h1>')
+            }
+            else{
+                let popup = window.open(
+                        'about:blank',
+                        "Error Message",
+                        'width=600,height=400,resizable=yes')
+
+                    popup.document.write('<h1>impliment authentication</h1>')
+            }
+
+            
+
+        }
+
+
+    </script>
+<body>
+
+    <p>Username</p>
+    <input type="username" id="user">
+    <p>Password</p>
+    <input type="password" id="pass">
+
+    <button onclick="authenticate()">Submit</button>
+    <form action="{{'http://127.0.0.1:5000/create_account'}}" method="get">
+        <button type="submit">Create Account</button>
+    </form>
+</body>
+</html>
