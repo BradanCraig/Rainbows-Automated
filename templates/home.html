@@ -1,4 +1,53 @@
+<html>
+    <script>
+        async function LoadSystems(){
+            var response = await fetch("/get_systems")//need to create this route on server
+            var data = await response.json()
+
+            const sidebar = document.getElementById("sidebar")
+
+            data.systems.forEach((system, index) => {//go through each system
+                var systemDiv = document.createElement("div")
+                systemDiv.className="system"
+
+                const titleDiv = document.createElement("div");//create div for the system
+                titleDiv.className = "system-title";
+                titleDiv.textContent = system.system_name;
+                titleDiv.onclick = () => toggleParts(`cameras${index}`);//creates drop down for cameras
+
+                const camerasDiv = document.createElement("div");
+                camerasDiv.className = "cameras";//creates cameras element
+                camerasDiv.id = `cameras${index}`;
+
+                system.cameras.forEach(camera => {
+                const cameraDiv = document.createElement("div");//goes trough each camera and adds it to "cameras" div
+                cameraDiv.className = "camera";
+                cameraDiv.textContent = camera;
+                camerasDiv.appendChild(cameraDiv);
+                });
+                
+                systemDiv.appendChild(titleDiv);
+                systemDiv.appendChild(camerasDiv);
+
+
+                sidebar.appendChild(systemDiv);
+                });
+            }
+
+        function toggleParts(id) {
+            const parts = document.getElementById(id);
+            parts.style.display = parts.style.display === "block" ? "none" : "block";
+        }
+
+        window.onload = loadSystems;
+    </script>
+    
 <body>
+
+    <div class="sidebar" id="sidebar">
+
+    </div>
+
 <a href="http://10.4.119.62:5000/">Livestream</a>
 
 <a href="http://127.0.0.1:5000/run">Take Images</a>
@@ -6,3 +55,4 @@
 <a href="http://127.0.0.1:5000/setup">Setup</a>
 <a>Profile Icon</a>
 </body>
+</html>

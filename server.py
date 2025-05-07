@@ -82,14 +82,14 @@ def login():
 
 @app.route("/add_data_to_db", methods=['POST'])
 def add_data_to_db():
+    
     try:
         data = request.json
-        print(data)
         result = DB["users"].insert_one(data)
-        print(f"Inserted with _id: {result.inserted_id}")
+
         return {"status": "success", "inserted_id": str(result.inserted_id)}, 200
     except pymongo.errors.PyMongoError as e:
-        print(f"MongoDB error: {e}")
+
         return {"status": "error", "message": str(e)}, 500
 
 
