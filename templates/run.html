@@ -4,13 +4,15 @@
         <script>
 
             function GetVals(){
+                const element = document.getElementById('notice')
+                element.innerHTML="<p>System Is In Use</p>"
                 var duration = parseFloat(document.getElementById("duration").value)
                 var frequency = parseFloat(document.getElementById("frequency").value)
                 console.log(duration, frequency)
                 console.log(60 % frequency)
                 if(frequency >= .25 && 60 % frequency == 0){
                     
-                    fetch("/send_dur_and_freq", {
+                    fetch("/start", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -21,6 +23,7 @@
                     .then(response => response.text())
                     .then(data => console.log("Response from server:", data))
                     .catch(err => console.error("Error:", err));
+                    //element.innerHTML = "<p>System Is Free</p>"
                 }
                 else{
                     let popup = window.open(
@@ -30,6 +33,15 @@
 
                     popup.document.write('<h1>Please enter a value greater than .25 and divisable by 60</h1>')
                 }
+            }
+            
+            function Kill(){
+                fetch('/stop')
+                .then(response => response.text())
+                .then(data => console.log("Response from server:", data))
+                .catch(err => console.error("Error:", err));
+                const element = document.getElementById('notice')
+                element.innerHTML = "<p>System Is Free</p>"
             }
 
         </script>
@@ -41,7 +53,9 @@
     <p>How many images would you like to take a minute?</p>
     <a>Can be as high as 6 and can be decimal</a>
     <input type="text" id="frequency">
-    <button onclick="GetVals()">Click Me</button>
+    <button onclick="GetVals()">Start</button>
+    <button onclick="Kill()">Stop</button>
+    <p id="notice">System Is Free</p>
     <p>Add infinite loop</p>
 </body>
 
