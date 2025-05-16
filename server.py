@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from raspberrypi import *
 import requests
 import base64
@@ -27,6 +27,12 @@ def livestream():
 @app.route("/run")
 def run():
     return render_template("run.html", run=run_script)
+
+
+
+@app.route("/download-raspi-zipfile", methods=["POST"])
+def download():
+    return send_file("static/raspi_files.zip", as_attachment=True)
 
 
 
