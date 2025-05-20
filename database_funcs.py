@@ -5,11 +5,17 @@ def declare_db():
     db = client["Rainbows_DB"]
     return db
 
-def authenticate(username, password):
+def authorize(username, password):
     db = declare_db()
     db = db["users"]
-    print("searching")
     user = db.find_one({"username": username})
-    print(user)
 
-authenticate("test","test")
+    if user == None:
+        return None
+    else:
+        if user["password"] == password:
+            return user
+        else:
+            print("None")
+            return None
+

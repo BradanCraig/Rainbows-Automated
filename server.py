@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, flash, url_for
+from flask import Flask, render_template, request, session, redirect, flash, url_for, jsonify
 from functools import wraps
 from raspberrypi import *
 from database_funcs import *
@@ -7,7 +7,7 @@ import base64
 from helpers import *
 import time
 import threading
-
+import secrets
 
 app=Flask(__name__)
 
@@ -20,6 +20,7 @@ stop_pictures = threading.Event()
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        print(session)
         if 'user_id' not in session:
             flash('You need to be logged in to access this page.')
             return redirect(url_for('login'))
@@ -36,12 +37,14 @@ def home():
 
 
 @app.route("/livestream")
+@login_required
 def livestream():
     return "Need to get the IP from the Raspberry Pi"
 
 
 
 @app.route("/run")
+@login_required
 def run():
     return render_template("run.html", run=run_script)
 
@@ -109,6 +112,7 @@ def start():
 
 
 @app.route("/setup")
+@login_required
 def setup():
     return render_template("setup.html")
 
@@ -116,22 +120,35 @@ def setup():
 
 @app.route("/login")
 def login():
+    return render_template("login.html")
+
+
+
+@app.route("/authenticate", methods=["POST"])
+def authenticate():
     data = request.get_json()
     username = data.get("username")
     password = data.get("password")
 
-    id = authenticate(username=username, password=password)
-    if id != None:
-        session["user_id"] = id
-        return redirect(url_for('home'))
+    user = authorize(username=username, password=password)
+    if user != None:
+        print("hit")
+        session["user_id"] = str(user["_id"])
+        return jsonify({'success': True, 'redirect': url_for('home')})
     else:
-        flash("Incorrect Password or Username")
+        flash("Incorrect Password or Username", "error")
+        return jsonify({'success': False, 'message': 'Invalid Credentials'})
     
-    return render_template("login.html")
-
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash('You have been logged out.')
+    return redirect(url_for('login'))
 
 if __name__ =="__main__":
+    app.secret_key = secrets.token_urlsafe(32)
     app.run(debug=True, port=5000)
+
 
 
 
