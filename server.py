@@ -8,6 +8,7 @@ from helpers import *
 import time
 import threading
 import secrets
+from bson.objectid import ObjectId
 
 app=Flask(__name__)
 
@@ -20,7 +21,6 @@ stop_pictures = threading.Event()
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        print(session)
         if 'user_id' not in session:
             flash('You need to be logged in to access this page.')
             return redirect(url_for('login'))
@@ -53,8 +53,6 @@ def run():
 @app.route('/send_dur_and_freq', methods=['POST'])
 def sending_data(stoping, duration, frequency):
 
-
-    
     url = 'http://10.4.119.62:5000/get_images'
     data = {'duration': duration, 'frequency': frequency}
     headers = {'Content-Type': 'application/json'}
@@ -138,15 +136,25 @@ def authenticate():
     else:
         flash("Incorrect Password or Username", "error")
         return jsonify({'success': False, 'message': 'Invalid Credentials'})
-    
+
+
+
 @app.route("/logout")
 def logout():
     session.clear()
     flash('You have been logged out.')
     return redirect(url_for('login'))
 
+
+@app.route("/get_systems", methods=["GET"])
+def get_systems():
+    user=get_user(ObjectId(session['user_id']))
+    return jsonify({'systems': user['systems']})
+
+
+
 if __name__ =="__main__":
-    app.secret_key = secrets.token_urlsafe(32)
+    app.secret_key = '1234', #secrets.token_urlsafe(32)
     app.run(debug=True, port=5000)
 
 

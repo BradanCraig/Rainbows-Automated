@@ -2,6 +2,36 @@
     <head>
         <link rel="stylesheet" href="/static/run.css">
         <script>
+            function GetSystems(){
+                fetch("/get_systems")
+                .then(response => response.json())
+                .then(data => {
+                    const element = document.getElementById("system")
+                    system_arr = data["systems"]
+                    if (system_arr.length == 0){
+                        console.log("None")
+                        const option = document.createElement("option")
+                        option.value = null
+                        option.text = "Must Add System"
+                        element.appendChild(option)
+                        console.log("Done")
+                    }
+                    else{
+                        console.log(system_arr)
+                        console.log(system_arr.length)
+                        for (let i = 0; i < system_arr.length; i++){
+                            const option = document.createElement("option")
+                            option.value = data[i]
+                            option.text = data[i]
+                            element.appendChild(option)
+                        }
+                }
+            
+                })
+                
+            }
+
+
 
             function GetVals(){
                 const element = document.getElementById('notice')
@@ -23,7 +53,7 @@
                     .then(response => response.text())
                     .then(data => console.log("Response from server:", data))
                     .catch(err => console.error("Error:", err));
-                    //element.innerHTML = "<p>System Is Free</p>"
+                    element.innerHTML = "<p>System Is Free</p>"
                 }
                 else{
                     let popup = window.open(
@@ -43,16 +73,22 @@
                 const element = document.getElementById('notice')
                 element.innerHTML = "<p>System Is Free</p>"
             }
-
+            
+            const systems = GetSystems()
         </script>
     </head>
 
 <body>
+    <p>Which system would you like to use?</p>
+    <select id="system">
+
     <p>How many minutes would you like to take pictures for?</p>
     <input type="text" id="duration">
+
     <p>How many images would you like to take a minute?</p>
     <a>Can be as high as 6 and can be decimal</a>
     <input type="text" id="frequency">
+
     <button onclick="GetVals()">Start</button>
     <button onclick="Kill()">Stop</button>
     <p id="notice">System Is Free</p>
