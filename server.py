@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, flash, url_for
+from functools import wraps
 from raspberrypi import *
+from database_funcs import *
 import requests
 import base64
 from helpers import *
@@ -12,6 +14,18 @@ app=Flask(__name__)
 #Globals
 thread=None
 stop_pictures = threading.Event()
+
+#add @login_required to any path that needs to have a session
+#this ensures that the username is in the session and can be accessed
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('You need to be logged in to access this page.')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 @app.route('/')
 def home():
@@ -67,11 +81,15 @@ def sending_data(stoping, duration, frequency):
         print(e)
         return f"Error sending data: {e}", 500
 
+
+
 @app.route("/stop")
 def stop():
     global stop_pictures
     stop_pictures.set()
     return "Stopped"
+
+
 
 @app.route("/start", methods=["POST"])
 def start():
@@ -88,9 +106,29 @@ def start():
         
     return "started"
 
+
+
 @app.route("/setup")
 def setup():
     return render_template("setup.html")
+
+
+
+@app.route("/login")
+def login():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    id = authenticate(username=username, password=password)
+    if id != None:
+        session["user_id"] = id
+        return redirect(url_for('home'))
+    else:
+        flash("Incorrect Password or Username")
+    
+    return render_template("login.html")
+
 
 if __name__ =="__main__":
     app.run(debug=True, port=5000)
