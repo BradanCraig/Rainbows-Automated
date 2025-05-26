@@ -73,7 +73,7 @@ def sending_data(stoping, duration, frequency):
             #turn off LED
 
             if i != number_of_images:
-                time.sleep((1/frequency)*60)
+                time.sleep(((1/frequency)*60)-.1)#needs to sleep for that amount of time in the code for LED to turn on
         
         print("done")
         return "Received Message"
