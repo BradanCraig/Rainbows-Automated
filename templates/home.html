@@ -1,8 +1,31 @@
+<html>
+    <script>
+        function AddSystem(){
+            const popup = document.getElementById("add_system_popup")
+            popup.style.display = "block"
+        }
+    </script>
+
+
+    <div, id="add_system_popup", class="popup">
+        <div class="popup-content">
+            <span class="close-button">&times;</span>
+            <p>Name</p>
+        <input type="text", id="name">
+        </div>
+
+    </div>
+</html>
 <body>
 <a href="http://10.4.119.62:5000/">Livestream</a>
 
 <a href="http://127.0.0.1:5000/run">Take Images</a>
 
 <a href="http://127.0.0.1:5000/setup">Setup</a>
+
+<a href="http://127.0.0.22:5000/add_system">Add System</a>
+<button onclick="AddSystem()">Add System</button>
 <a>Profile Icon</a>
+
+
 </body>

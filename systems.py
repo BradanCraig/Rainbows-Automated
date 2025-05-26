@@ -32,6 +32,8 @@ class Sensor:
             self.name=name
         self.ip = None
     
+    
+    
 
     
 
