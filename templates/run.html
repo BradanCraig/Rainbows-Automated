@@ -2,6 +2,47 @@
     <head>
         <link rel="stylesheet" href="/static/run.css">
         <script>
+            
+            function Infinite(){
+                
+                let popup = window.open(
+                        'about:blank',
+                        "Error Message",
+                        'width=600,height=400,resizable=yes')
+
+                    popup.document.write('<h1>How often would you like pictures taken in hours (decimals accepted, but please be a nice value or ill cry)</h1>')
+                    
+                    let input_box = popup.document.createElement("input")
+                    input_box.type="text"
+                    input_box.id="hours"
+                    popup.document.body.appendChild(input_box)
+                    
+                    let button = popup.document.createElement("button");
+                    
+                    button.innerHTML = "Submit";
+                    
+                    button.onclick = function Submit_Infinite(){
+                        const element = document.getElementById('notice')
+                        element.innerHTML="<p>System Is In Use</p>"
+
+                        const frequency = parseFloat(popup.document.getElementById("hours").value)
+                        const duration = null
+                        popup.close()
+                            fetch("/start", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({duration, frequency})
+                        })
+                                        .then(response => response.text())
+                        .then(data => console.log("Response from server:", data))
+                        .catch(err => console.error("Error:", err));
+                }
+
+                    popup.document.body.appendChild(button);
+            }
+
             function GetSystems(){
                 fetch("/get_systems")
                 .then(response => response.json())
@@ -88,11 +129,11 @@
     <p>How many images would you like to take a minute?</p>
     <a>Can be as high as 6 and can be decimal</a>
     <input type="text" id="frequency">
-
+    <button onclick="Infinite()">Run Infinitely</button>
     <button onclick="GetVals()">Start</button>
     <button onclick="Kill()">Stop</button>
     <p id="notice">System Is Free</p>
-    <p>Add infinite loop</p>
+    
 </body>
 
 

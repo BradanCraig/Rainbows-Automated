@@ -56,32 +56,49 @@ def sending_data(stoping, duration, frequency):
     url = 'http://10.4.119.62:5000/get_images'
     data = {'duration': duration, 'frequency': frequency}
     headers = {'Content-Type': 'application/json'}
+    
+    if duration != None:
+        try:
+            number_of_images = (duration*frequency)
+            for i in range(number_of_images+1):
 
-    try:
-        number_of_images = (duration*frequency)
-        for i in range(number_of_images+1):
+                if stoping.is_set():
+                    return "Stopped Early"
+                
+                #Turn On LED
 
-            if stoping.is_set():
-                return "Stopped Early"
+                response = requests.post(url, json=data, headers=headers)
+                image = decode_image(encoded_img=response.json()['image'])
+                image.save(f"images/image_{i}.png")
+                
+                #turn off LED
+
+                if i != number_of_images:
+                    time.sleep(((1/frequency)*60)-.1)#needs to sleep for that amount of time in the code for LED to turn on
             
-            #Turn On LED
+            print("done")
+            return "Received Message"
+
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return f"Error sending data: {e}", 500
+
+    else:
+        while True:
+            print(duration, frequency)
+            if stoping.is_set():
+                    return "Stopped Early"
+                
+                #Turn On LED
 
             response = requests.post(url, json=data, headers=headers)
             image = decode_image(encoded_img=response.json()['image'])
             image.save(f"images/image_{i}.png")
-            
-            #turn off LED
+                
+                #turn off LED
 
             if i != number_of_images:
-                time.sleep(((1/frequency)*60)-.1)#needs to sleep for that amount of time in the code for LED to turn on
-        
-        print("done")
-        return "Received Message"
-
-    except requests.exceptions.RequestException as e:
-        print(e)
-        return f"Error sending data: {e}", 500
-
+                time.sleep(((1/frequency)*360)-.1)
 
 
 @app.route("/stop")
