@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from systems import *
+
 def declare_db():
     client = MongoClient("mongodb://localhost:27017/")
     db = client["Rainbows_DB"]
