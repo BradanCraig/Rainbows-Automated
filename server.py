@@ -171,7 +171,7 @@ def get_systems():
 
 
 if __name__ =="__main__":
-    app.secret_key = '1234', #secrets.token_urlsafe(32)
+    app.secret_key = '1234' #secrets.token_urlsafe(32)
     app.run(debug=True, port=5000)
 
 
